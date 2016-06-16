@@ -1,8 +1,9 @@
 import React from 'react';
 import {render} from 'react-dom';
 import ProductListItem from './ProductListItem';
+import ProductShow from './ProductShow';
 
-let products = [
+let productList = [
   {
     id: 1,
     price: 12.00,
@@ -43,28 +44,132 @@ let products = [
 class ProductList extends React.Component {
   constructor() {
     super();
-   
+    
     this.state = {
-      products: products
-    };
+      products: productList,
+      selectedProduct: null,
+      selectedProductEditable: true
+    }
+  }
+  
+  getProductById(productId) {
+    for (const product of this.state.products) {
+      if (product.id == productId) {
+        return product;
+      }
+    }
+    
+    return null;
+  }
+  
+  selectedProductDidChange(productId, editing) {
+    if (productId != null) {
+      let product = this.getProductById(productId);
+      if (product != null) {
+        this.setState({
+          selectedProduct: product, 
+          selectedProductEditable: editing
+        });
+      } else {
+        console.log('Error: could not find product with id: ' + productId);
+      }
+    } else {
+      // we're creating a new product
+    }
+  }
+  
+  editProduct(productToEdit) {
+    var products = this.state.products.slice();
+    for (let product of products) {
+      if (product.id == productToEdit.id) {
+        product = productToEdit;
+        break;
+      }
+    }
+    
+    this.setState({
+      products: products,
+      selectedProduct: null,
+      selectedProductEditable: true
+    });
+  }
+
+  generateProductId() {
+    if (this.state.products.length >= 1000) {
+      return null;
+    }
+    
+    var gotUnique = false;
+    while (!gotUnique) {
+      var id = Math.floor((Math.random() * 1000) + 1);
+      for (let product of this.state.products) {
+        if (product.id == id) {
+          break;
+        }
+      }
+      
+      gotUnique = true;
+    }
+    
+    return id;
+  }
+  
+  addProduct(product) {
+    product.id = this.generateProductId();
+    if (product.id != null) {
+      this.setState({
+        products: this.state.products.concat(product),
+        selectedProduct: null,
+        selectedProductEditable: true
+      });
+    } else {
+      console.log('We\'ve reached the limit of 1000 items');
+    }
+  } 
+  
+  deleteProduct(productId) {
+    
   }
   
   render() {
     return (
       <div>
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <td>ID</td>
-              <td>Name</td>
-              <td>Description</td>
-              <td>Actions</td>
-            </tr>
-          </thead>
-          <tbody>
-            { this.state.products.map(product => { return (<ProductListItem product={product} key={product.id}/>) } ) }
-          </tbody>
-        </table>
+        <div className="row">
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Price</td>
+                <td>Actions</td>
+              </tr>
+            </thead>
+            <tbody>
+              { 
+                this.state.products.map(product => { 
+                  return (
+                    <ProductListItem product={product} selectedProductDidChange={this.selectedProductDidChange.bind(this)} key={product.id}/>
+                  ) 
+                }) 
+              }
+            </tbody>
+          </table>
+          <div>
+            <ProductShow 
+              product={this.state.selectedProduct} 
+              editing={this.state.selectedProductEditable} 
+              editProduct={this.editProduct.bind(this)}
+              addProduct={this.addProduct.bind(this)}
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-4"></div>
+          <div className="col-md-4">
+            <button className="btn btn-default" onClick={this.selectedProductDidChange.bind(this, null, true)} data-toggle="modal" data-target="#editModal">Add New Product</button>
+          </div>
+          <div className="col-md-4"></div>
+        </div>
       </div>
     )
   }
