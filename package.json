@@ -1,7 +1,7 @@
 {
-  "name": "contactstrain",
+  "name": "productstrain",
   "version": "1.0.0",
-  "description": "Contact React JS project",
+  "description": "Training Products React JS project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
