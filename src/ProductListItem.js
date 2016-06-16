@@ -7,6 +7,7 @@ class ProductListItem extends React.Component {
     super(props);
     
     this.selectedProductDidChange = props.selectedProductDidChange;
+    this.deleteProduct = props.selectedProductDidChange;
   }
   render() {
     return (
@@ -15,7 +16,7 @@ class ProductListItem extends React.Component {
         <td> {this.props.product.name } </td>
         <td> ${this.props.product.price } </td>
         <td> 
-          <button className="btn btn-primary" onClick={this.selectedProductDidChange.bind(this, this.props.product.id, false)} data-toggle="modal" data-target="#editModal">View</button> <button className="btn btn-success" onClick={this.selectedProductDidChange.bind(this, this.props.product.id, true)} data-toggle="modal" data-target="#editModal">Edit</button> <button className="btn btn-danger">Delete</button></td> 
+          <button className="btn btn-primary" onClick={this.selectedProductDidChange.bind(this, this.props.product.id, false)} data-toggle="modal" data-target="#editModal">View</button> <button className="btn btn-success" onClick={this.selectedProductDidChange.bind(this, this.props.product.id, true)} data-toggle="modal" data-target="#editModal">Edit</button> <button className="btn btn-danger" onClick={this.props.deleteProduct.bind(this, this.props.product.id)}>Delete</button></td> 
       </tr>
     )
   }

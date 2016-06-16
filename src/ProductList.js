@@ -128,7 +128,11 @@ class ProductList extends React.Component {
   } 
   
   deleteProduct(productId) {
-    
+    this.setState({
+      products: this.state.products.filter(product => {return product.id != productId}),
+      selectedProduct: null,
+      selectedProductEditable: true
+    });
   }
   
   render() {
@@ -148,7 +152,11 @@ class ProductList extends React.Component {
               { 
                 this.state.products.map(product => { 
                   return (
-                    <ProductListItem product={product} selectedProductDidChange={this.selectedProductDidChange.bind(this)} key={product.id}/>
+                    <ProductListItem 
+                      product={product} 
+                      selectedProductDidChange={this.selectedProductDidChange.bind(this)} 
+                      deleteProduct={this.deleteProduct.bind(this)} key={product.id}
+                    />
                   ) 
                 }) 
               }
@@ -160,6 +168,7 @@ class ProductList extends React.Component {
               editing={this.state.selectedProductEditable} 
               editProduct={this.editProduct.bind(this)}
               addProduct={this.addProduct.bind(this)}
+              deleteProduct={this.deleteProduct.bind(this)}
             />
           </div>
         </div>
@@ -173,7 +182,6 @@ class ProductList extends React.Component {
       </div>
     )
   }
-  
 }
 
 export default ProductList
