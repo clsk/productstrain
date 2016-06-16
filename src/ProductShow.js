@@ -68,7 +68,7 @@ class ProductEdit extends React.Component {
         name: this.state.name,
         price: this.state.price,
         description: this.state.description,
-        creationDate: this.state.creationDate
+        creationDate: Date.parse(this.state.creationDate)
       };
       
       this.props.addProduct(product);
@@ -78,7 +78,7 @@ class ProductEdit extends React.Component {
       this.props.product.name         = this.state.name;
       this.props.product.price        = this.state.price;
       this.props.product.description  = this.state.description;
-      this.props.product.creationDate = this.state.creationDate; 
+      this.props.product.creationDate = Date.parse(this.state.creationDate);
       this.props.editProduct(this.props.product);
     }
     $('#editModal').modal('toggle');

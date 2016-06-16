@@ -45,8 +45,13 @@ class ProductList extends React.Component {
   constructor() {
     super();
     
+    let products = this.loadProductsFromStore();
+    if (products == null || typeof(products) === 'undefined') {
+      products = productList;
+    }
+    
     this.state = {
-      products: productList,
+      products: products,
       selectedProduct: null,
       selectedProductEditable: true
     }
@@ -92,6 +97,8 @@ class ProductList extends React.Component {
       selectedProduct: null,
       selectedProductEditable: true
     });
+    
+    this.saveProductsToStore(products);
   }
 
   generateProductId() {
@@ -117,22 +124,37 @@ class ProductList extends React.Component {
   addProduct(product) {
     product.id = this.generateProductId();
     if (product.id != null) {
+      let products = this.state.products.concat(product);
       this.setState({
-        products: this.state.products.concat(product),
+        products: products,
         selectedProduct: null,
         selectedProductEditable: true
       });
+      
+      this.saveProductsToStore(products);
     } else {
       console.log('We\'ve reached the limit of 1000 items');
     }
+    
   } 
   
   deleteProduct(productId) {
+    let products = this.state.products.filter(product => {return product.id != productId});
     this.setState({
-      products: this.state.products.filter(product => {return product.id != productId}),
+      products: products,
       selectedProduct: null,
       selectedProductEditable: true
     });
+    
+    this.saveProductsToStore(products);
+  }
+  
+  saveProductsToStore(products) {
+    localStorage.setItem('products', JSON.stringify(products));
+  }
+  
+  loadProductsFromStore() {
+    return JSON.parse(localStorage.getItem('products'));
   }
   
   render() {
